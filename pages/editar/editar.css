@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+
+
+
+.topbar h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.container form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.container form label{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-size: 14px;
+    gap: 10px;
+    color: #333;
+}
+
+.container form div {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: end;
+    gap: 40px;
+}
+
+.container form div div{
+    gap: 10px;
+    width: 100%;
+}
+
+
+ .container #container-botton {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+  
+    
+   
+}
+
+input:disabled,
+textarea:disabled {
+    background-color: #f0f0f0; 
+    color: #777;
+    cursor: not-allowed;
+}

@@ -1,0 +1,90 @@
+.topbar {
+    background-image: linear-gradient(to right,#DDB0B7,#995B64);
+    color: #222221;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.topbar h1 {
+
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.topbar p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color:#dfe9f2;
+}
+body {
+    font-family: 'Ariel', sans-serif;
+    background-color: #FCF0F2;
+    margin: 0;
+    padding: 0;
+}
+
+button {
+    color: #000000;
+    border-radius: 15px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 35px;
+    padding: 12px;
+}
+
+#btn-alterar {
+    background-color: #ecb62d;
+    width: 100px;
+    justify-content: center;
+    gap: 8px;
+}
+
+#btn-cadastrar {
+    background-color: #ecb62d;
+    width: 130px;
+}
+#btn-cadastrar:hover {
+    background-color: #bba97c;
+}
+
+#btn-salvar {
+    background-color: #779341;
+    color: #FFFFFF;
+    width: 100px;
+    
+    justify-content: center;
+    gap: 8px;
+    
+}
+#btn-salvar:hover {
+
+    background-color: #91c28d;
+}
+
+input,
+textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+}
+
+select {
+    appearance: none; /* Remove o estilo padrão */
+    cursor: pointer;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+}

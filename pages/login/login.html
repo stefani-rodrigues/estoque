@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="login.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+   
+    <script>
+        function loginUsuario() {
+            const email = document.getElementById("email").value;
+            const senha = document.getElementById("senha").value;
+ 
+            const data = {
+                email: email,
+                password: senha  // Corrigido para 'password' (deve corresponder ao DTO do backend)
+            }; 
+
+            axios.post("http://localhost:8080/users/login", data, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    localStorage.setItem("isAuthenticated", "true");
+                    window.location.href = "../gerenciamentoProds/index.html"; // Redireciona para a página inicial
+                }else {
+                    localStorage.setItem("isAuthenticated", "false");
+                    alert("Usuário ou senha incorretos!");
+                }
+            })
+            .catch((error) => {
+                localStorage.setItem("isAuthenticated", "false");
+                alert("Login ou senha incorretos!");
+            });
+        }
+
+
+         // Função para carregar um fragmento de HTML
+         function loadForm(selector, url) {
+            fetch(url)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`Erro ao carregar o fragmento: ${url}`);
+                    }
+                    return response.text();
+                })
+                .then((html) => {
+                    document.querySelector(selector).innerHTML = html;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+
+        // Alternar entre login e registrar
+        function showPage(page) {
+            if (page === "login") {
+                loadForm("#container-login", "../../components/logins/fazerLogin.html");
+            } else if (page === "register") {
+                loadForm("#container-login", "../../components/logins/registrar.html");
+            }
+        }
+
+        // Configurar eventos de mudança de página
+        document.addEventListener("DOMContentLoaded", () => {
+            // Inicialmente, mostrar a página de login
+            showPage("login");
+        });
+
+        async function registrar(){
+            const pessoa = {
+                email: document.getElementById("email").value,
+                password: document.getElementById("senha").value
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/users/register', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(pessoa),
+                });
+
+                if (response.ok) {
+                    alert("Usuario cadastrado com sucesso!");
+                    localStorage.setItem("isAuthenticated", "true");
+                    window.location.href = "../gerenciamentoProds/index.html"; // Redireciona para a página inicial
+                } else {
+                    const errorMessage = await response.json();
+                    console.error('Erro ao cadastrar login:', response);
+                    alert(`Erro: ${errorMessage.message || 'Tente novamente.'}`);
+                }
+            } catch (error) {
+                console.error('Erro ao cadastrar login:', error);
+                alert("Erro ao cadastrar login. Tente novamente.");
+            }
+        }
+    </script>
+ 
+</head>
+ 
+<body>
+    <div class="container-infos">
+       
+    </div>
+    <div id="container-login" class="container-login">
+        
+    </div>
+</body>
+
+</html>

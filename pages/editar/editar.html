@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Produto</title>
+    <link rel="stylesheet" href="editar.css">
+    <link rel="stylesheet" href="../../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="topbar">
+        <h1>Editar Produto</h1>
+    </div>
+
+    <div class="container">
+        <form action="#" id="editar-produto-form">
+           
+                <label for="codigo">Código
+                    <input type="text" id="codigo" disabled>
+                </label>
+        
+                <label for="produto">Produto
+                    <input type="text" id="produto">
+                </label>
+               
+
+                <label for="codigo-barras">Código de Barras
+                    <input type="text" id="codigoBarras">
+                </label>
+ 
+                <label for="descricao">Descrição
+                    <textarea id="descricao"></textarea>
+                </label>
+                
+                <div>
+                    <div>
+                        <label for="estoqueAtual">Estoque Atual
+                            <input type="text" id="estoqueAtual" disabled class="campo-estoque">
+                        </label>
+                        <button id="btn-alterar" class="btn" type="button" onclick="AlterarEsoque()">
+                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" version="1.2" baseProfile="tiny" viewBox="0 0 24 24" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M21.561 5.318l-2.879-2.879c-.293-.293-.677-.439-1.061-.439-.385 0-.768.146-1.061.439l-3.56 3.561h-9c-.552 0-1 .447-1 1v13c0 .553.448 1 1 1h13c.552 0 1-.447 1-1v-9l3.561-3.561c.293-.293.439-.677.439-1.061s-.146-.767-.439-1.06zm-10.061 9.354l-2.172-2.172 6.293-6.293 2.172 2.172-6.293 6.293zm-2.561-1.339l1.756 1.728-1.695-.061-.061-1.667zm7.061 5.667h-11v-11h6l-3.18 3.18c-.293.293-.478.812-.629 1.289-.16.5-.191 1.056-.191 1.47v3.061h3.061c.414 0 1.108-.1 1.571-.29.464-.19.896-.347 1.188-.64l3.18-3.07v6zm2.5-11.328l-2.172-2.172 1.293-1.293 2.171 2.172-1.292 1.293z"></path></svg>
+                            Alterar 
+                        </button>
+                    </div>
+                    
+                    <label for="situacao">Situação
+                        <select id="situacao">
+                            <option value="ACTIVE">Ativo</option>
+                            <option value="INACTIVE">Inativo</option>
+                        </select>
+                    </label>
+                  
+                </div>
+        </form>
+        <div id="container-botton">
+            <button id="btn-salvar" onclick="salvarAlteracoes()">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 256 256" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M219.31,72,184,36.69A15.86,15.86,0,0,0,172.69,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V83.31A15.86,15.86,0,0,0,219.31,72ZM168,208H88V152h80Zm40,0H184V152a16,16,0,0,0-16-16H88a16,16,0,0,0-16,16v56H48V48H172.69L208,83.31ZM160,72a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h56A8,8,0,0,1,160,72Z"></path></svg>
+                Salvar</button>
+        </div>
+       
+        <div id="erro-mensagem" class="erro-mensagem" style="display: none;">
+            <p>O produto está inativo. Apenas a alteração de situação é permitida.</p>
+        </div>
+    </div>
+
+    <script src="../../scripts/auth.js"></script>
+
+    <script>
+          // Verifica se o usuário está autenticado
+          checkAuthentication();
+          console.log("Chego");
+        const urlParams = new URLSearchParams(window.location.search);
+        const produtoId = urlParams.get('id');
+        console.log("Chego " + produtoId);
+
+        let situacaoProduto = "ACTIVE"; // Padrão, será atualizado ao carregar o produto.
+
+        async function carregarProduto() {
+            try {
+                const response = await fetch(`http://localhost:8080/products/${produtoId}`);
+                if (response.ok) {
+                    alert("Produto carregado")
+                    const produto = await response.json();
+                    document.getElementById('codigo').value = produto.id;
+                    document.getElementById('produto').value = produto.name;
+                    document.getElementById('codigoBarras').value = produto.barcode;
+                    document.getElementById('descricao').value = produto.description;
+                    document.getElementById('estoqueAtual').value = produto.stockQuantity;
+                    document.getElementById('situacao').value = produto.situation;
+
+                    situacaoProduto = produto.situation;
+                    verificarSituacao(); // Aplicar as restrições com base na situação
+                }
+            } catch (error) {
+                console.error('Erro ao carregar produto:', error);
+            }
+        }
+
+        function verificarSituacao() {
+            const situacao = document.getElementById("situacao").value;
+
+            const camposEditaveis = [
+                document.getElementById("produto"),
+                document.getElementById("codigoBarras"),
+                document.getElementById("descricao"),
+            ];
+
+            const alterarEstoqueBtn = document.getElementById("btn-alterar");
+            const erroMensagem = document.getElementById("erro-mensagem");
+
+            if (situacao === "INACTIVE") {
+                // Bloquear edição
+                camposEditaveis.forEach(campo => campo.disabled = true);
+                alterarEstoqueBtn.classList.add("disabled");
+
+                // Mostrar mensagem de erro
+                erroMensagem.style.display = "block";
+            } else {
+                // Desbloquear edição
+                camposEditaveis.forEach(campo => campo.disabled = false);
+                alterarEstoqueBtn.classList.remove("disabled");
+
+                // Ocultar mensagem de erro
+                erroMensagem.style.display = "none";
+            }
+        }
+
+        document.getElementById("situacao").addEventListener("change", verificarSituacao);
+
+        function AlterarEsoque(){
+            if (situacaoProduto === "INACTIVE") {
+                event.preventDefault();
+                alert("O produto está inativo. Não é possível alterar o estoque.");
+            } else {
+                console.log("Passo aqui");
+                window.location.href = `../movimentacoes/movimentacao.html?produtoId=${produtoId}`;
+            }
+        }
+
+        async function salvarAlteracoes() {
+            const produto = {
+                name: document.getElementById("produto").value,
+                barcode: document.getElementById("codigoBarras").value,
+                description: document.getElementById("descricao").value,
+                stockQuantity: document.getElementById("estoqueAtual").value,
+                situation: document.getElementById("situacao").value,
+            };
+
+            try {
+                const response = await fetch(`http://localhost:8080/products/${produtoId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(produto),
+                });
+
+                if (response.ok) {
+                    alert("Produto atualizado com sucesso!");
+                    window.location.href = "index.html";
+                } else {
+                    alert("Erro ao atualizar produto. Tente novamente.");
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar produto:', error);
+                alert("Erro ao atualizar produto. Tente novamente.");
+            }
+        }
+        
+        carregarProduto();
+    </script>
+</body>
+</html>

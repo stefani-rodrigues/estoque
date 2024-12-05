@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Produto</title>
+    <link rel="stylesheet" href="cadastrar.css">
+    <link rel="stylesheet" href="../../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <script src="../../scripts/auth.js"></script>
+    <script>
+        // Verifica se o usuário está autenticado
+            checkAuthentication();
+
+
+        async function Cadastrar(){
+            const produto = {
+                name: document.getElementById("produto").value,
+                barcode: parseInt(document.getElementById("codigoBarras").value),
+                description: document.getElementById("descricao").value,
+                stockQuantity: parseInt(document.getElementById("estoque").value),
+                situation: document.getElementById("situacao").value // Adicionado o campo de situação
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/products', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(produto),
+                });
+
+                if (response.ok) {
+                    alert("Produto cadastrado com sucesso!");
+                    window.location.href = "../gerenciamentoProds/index.html";
+                } else {
+                    const errorMessage = await response.json();
+                    console.error('Erro ao cadastrar produto:', response);
+                    alert(`Erro: ${errorMessage.message || 'Tente novamente.'}`);
+                }
+            } catch (error) {
+                console.error('Erro ao cadastrar produto:', error);
+                alert("Erro ao cadastrar produto. Tente novamente.");
+            }
+        }
+    </script>
+   
+    <div class="topbar">
+        <h1>Cadastrar Produto</h1>
+    </div>
+
+    <div class="container">
+        <form id="produtoForm">
+
+            <label for="produto">
+                Produto
+                <input type="text" id="produto" placeholder="Ex: Sabonete Facial" required>
+            </label>
+
+            <label for="codigo-barras">
+                Código de Barras
+                <input type="text" id="codigoBarras" placeholder="Ex: 7891234567" required>
+            </label>
+
+            <label for="descricao">
+                Descrição
+                <textarea id="descricao" placeholder="Ex: Sabonete para limpeza facial profunda" required></textarea>
+            </label>
+
+            <label for="estoque">
+                Estoque Inicial
+                <input type="number" id="estoque" min="0" placeholder="Ex: 50" required>
+            </label>
+
+            <label for="situacao">
+                Situação
+                <select id="situacao">
+                    <option value="ACTIVE" selected>Ativo</option>
+                    <option value="INACTIVE">Inativo</option>
+                </select>
+            </label>
+        </form> 
+        <div id="container-botton">
+            <button id="btn-salvar" type="button" onclick="Cadastrar()">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 256 256" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M219.31,72,184,36.69A15.86,15.86,0,0,0,172.69,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V83.31A15.86,15.86,0,0,0,219.31,72ZM168,208H88V152h80Zm40,0H184V152a16,16,0,0,0-16-16H88a16,16,0,0,0-16,16v56H48V48H172.69L208,83.31ZM160,72a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h56A8,8,0,0,1,160,72Z"></path></svg>
+                Salvar
+            </button>
+        </div>
+    </div>
+   
+   
+</body>
+
+</html>
